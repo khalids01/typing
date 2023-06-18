@@ -1,0 +1,21 @@
+node_modules/
+dist/
+*.DS_Store
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+.vscode/
+**/*.spec.ts
+package-lock.json
+.svelte-kit/
+.pnpm-debug.log
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
