@@ -1,6 +1,6 @@
 <script>
   import { Container, Flex } from "$lib/components/ui";
-  import { scores, getScores } from "../../../typing";
+  import { scores, getScores } from "$lib/store/typing";
   let score = getScores;
   scores.subscribe((cScore) => {
     score = cScore;

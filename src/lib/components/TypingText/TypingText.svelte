@@ -9,7 +9,7 @@
     startTimer,
     resetLetters,
     endTimer,
-  } from "../../../typing";
+  } from "$lib/store/typing";
 
   let activeIndex = 0;
   let textFocused = false;

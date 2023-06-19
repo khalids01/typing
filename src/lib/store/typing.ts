@@ -1,4 +1,7 @@
 import { get, writable } from "svelte/store";
+import { allStories, getNextStory } from "./texts";
+
+let currentStoryIndex = 0;
 
 export let scores = writable({
   speed: "0",
@@ -40,7 +43,7 @@ export const resetTimer = () => {
   });
 };
 
-let str = "Lorem ipsum";
+let str = allStories[currentStoryIndex];
 
 let strMap = new Map();
 
@@ -96,16 +99,20 @@ letters.subscribe((currentLetters) => {
   currentLetters.entries();
 });
 
-const updateScores = (cLetters: typeof getLetters) => {
-  let words = Array.from(cLetters.values()).map((item) => {
-    if (
-      item.element.length > 2 &&
-      item.element != " " &&
-      String(item.element).trim()
-    ) {
-      return item;
+const getWords = (s: string) => {
+  let words: any[] = [];
+  let splitWords = s.split(" ");
+  splitWords.forEach((word) => {
+    if (word.length > 2) {
+      words.push(word);
     }
-  }).length;
+  });
+
+  return words.length;
+};
+
+const updateScores = (cLetters: typeof getLetters) => {
+  let words = getWords(str);
 
   let currentTotalLetters = Array.from(cLetters.values()).map(
     (item) => item.element
@@ -116,16 +123,18 @@ const updateScores = (cLetters: typeof getLetters) => {
     let t = get(timer);
     let tInSec = t.end - t.start;
     newScore.errors = `${errors.length} letters`;
-    newScore.speed = `${((words * 60) / tInSec).toFixed(1)} wpm`;
+    newScore.speed = `${(words / (tInSec / 60)).toFixed(1)} wpm`;
     newScore.accuracy = `${(
       (rights.length / currentTotalLetters.length) *
       100
     ).toFixed(1)}%`;
 
+    console.log(words, tInSec);
+
     return newScore;
   });
 
-  setStrMap(str);
+  setStrMap(getNextStory(currentStoryIndex));
 };
 
 export const typingDone = () => {
