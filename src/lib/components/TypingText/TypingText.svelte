@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
   import { Container, Flex } from "$lib/components/ui";
   import {
     getItem,
@@ -42,21 +42,21 @@
     resetLetters();
   };
 
-  // TODO
-  // use effect
-  //if(["right", "wrong"].includes(sLetters.get(sLetters.size - 1).status)
-
-  // @ts-ignore
-  const handleWindowKeyPress = (e) => {
-    pressedKey = e.key;
-    if (!textFocused) return;
-    if (activeIndex === sLetters.size) {
+  afterUpdate(() => {
+    if (["right", "wrong"].includes(sLetters.get(sLetters.size - 1).status)) {
+      console.log("All checked");
       activeIndex = 0;
       endTimer();
       typingDone();
       timerStart = true;
       return;
     }
+  });
+
+  // @ts-ignore
+  const handleWindowKeyPress = (e) => {
+    pressedKey = e.key;
+    if (!textFocused) return;
     if (timerStart) {
       startTimer();
       timerStart = false;
