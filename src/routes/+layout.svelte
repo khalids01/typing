@@ -4,13 +4,11 @@
   import "@skeletonlabs/skeleton/styles/skeleton.css";
   import "../app.postcss";
   import { AppShell } from "@skeletonlabs/skeleton";
-  import LeftSide from "$lib/components/leftSideBar/leftSide.svelte";
-  import RightSide from "$lib/components/rightSideBar/rightSide.svelte";
+  // import LeftSide from "$lib/components/leftSideBar/leftSide.svelte";
 </script>
 
 <AppShell slotSidebarLeft={'bg-slate-900/10 backdrop-blur-md'}>
-  <svelte:fragment slot="sidebarLeft"><LeftSide /></svelte:fragment>
-  <svelte:fragment slot="sidebarRight"><RightSide /></svelte:fragment>
+  <!-- <svelte:fragment slot="sidebarLeft"><LeftSide /></svelte:fragment> -->
   <div
     class="glowing-bg z-0 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
   />
