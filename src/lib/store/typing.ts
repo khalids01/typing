@@ -101,6 +101,7 @@ letters.subscribe((currentLetters) => {
 
 const getWords = (s: string) => {
   let words: any[] = [];
+  let spacesCount = s.split("").filter((s) => s === " ").length;
   let splitWords = s.split(" ");
   splitWords.forEach((word) => {
     if (word.length > 1) {
@@ -108,7 +109,7 @@ const getWords = (s: string) => {
     }
   });
 
-  return words.length;
+  return words.length + Math.floor(spacesCount / 3);
 };
 
 const updateScores = (cLetters: typeof getLetters) => {
@@ -128,8 +129,6 @@ const updateScores = (cLetters: typeof getLetters) => {
       (rights.length / currentTotalLetters.length) *
       100
     ).toFixed(1)}%`;
-
-    console.log(words, tInSec);
 
     return newScore;
   });
