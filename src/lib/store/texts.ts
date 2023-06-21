@@ -1,8 +1,8 @@
-import { get, writable, readable } from "svelte/store";
+import { get, readable } from "svelte/store";
 
 const storiesData = [
-  "first lorem ipsum dolor sit amet it is a dummy text for practice",
-  "second lorem ipsum dolor sit amet it is a dummy text for practice",
+  "first lorem ipsum dummy text for practice",
+  "second lorem ipsum for practice",
   "third lorem ipsum dolor sit amet it is a dummy text for practice",
   "fourth lorem ipsum dolor sit amet it is a dummy text for practice",
   "fifth lorem ipsum dolor sit amet it is a dummy text for practice",

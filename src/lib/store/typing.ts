@@ -103,7 +103,7 @@ const getWords = (s: string) => {
   let words: any[] = [];
   let splitWords = s.split(" ");
   splitWords.forEach((word) => {
-    if (word.length > 2) {
+    if (word.length > 1) {
       words.push(word);
     }
   });
@@ -135,6 +135,7 @@ const updateScores = (cLetters: typeof getLetters) => {
   });
 
   setStrMap(getNextStory(currentStoryIndex));
+  currentStoryIndex++;
 };
 
 export const typingDone = () => {

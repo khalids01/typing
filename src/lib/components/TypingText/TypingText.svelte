@@ -44,7 +44,6 @@
 
   afterUpdate(() => {
     if (["right", "wrong"].includes(sLetters.get(sLetters.size - 1).status)) {
-      console.log("All checked");
       activeIndex = 0;
       endTimer();
       typingDone();
@@ -80,7 +79,7 @@
 
 <svelte:window on:keypress={handleWindowKeyPress} />
 
-<Container size="xl" py="pt-4">
+<section class="pt-4">
   <Flex justify="center" wrap="wrap">
     <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
     <div
@@ -107,9 +106,14 @@
       {/if}
     </div>
   </Flex>
-</Container>
+</section>
 
 <style lang="scss">
+  section {
+    max-width: 920px;
+    padding-inline: 1rem;
+    margin-inline: auto;
+  }
   .letters {
     font-size: 1.5rem;
     font-weight: 600;

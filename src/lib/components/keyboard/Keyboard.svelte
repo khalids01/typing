@@ -1,66 +1,94 @@
 <script>
-  import { onMount, afterUpdate } from "svelte";
+  import { afterUpdate } from "svelte";
   import { keyboardRowsData } from "./keyData";
+
+  /**
+   * @type {number}
+   */
+  let activeKeyCode = -1;
+
+  afterUpdate(() => {});
+  // @ts-ignore
+  const handleWindowKeyDown = (e) => {
+    activeKeyCode = e.keyCode;
+  };
+
+  const handleWindowKeyUp = () => {
+    setTimeout(() => {
+      activeKeyCode = -1;
+    }, 500);
+  };
 </script>
 
-<div class="keyboardbg">
-  <input name="" id="inputbox" class="input-box" />
+<svelte:window on:keydown={handleWindowKeyDown} on:keyup={handleWindowKeyUp} />
+<section class=" hidden xl:block" >
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-  <div tabindex="0" id="keyboardBase" class="keyboard-base">
+  <div tabindex="0" id="keyboardBase" class="keyboard-base mx-auto mt-8">
     {#each keyboardRowsData as row}
-      <div class="key-row">
-        {#each row.keys as key}
-          <div data={key.data} class="key inkey">{key.value}</div>
-        {/each}
-      </div>
+      {#each row.keys as key}
+        <div
+          class={`key ${key?.class ? key.class : ""} ${
+            activeKeyCode == key.data ? "active" : ""
+          }`}
+        >
+          <span class="relative z-10">
+            {key.value}
+          </span>
+        </div>
+      {/each}
     {/each}
   </div>
-</div>
+</section>
 
-<style>
-  .keyboardbg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  input {
-    width: 740px;
-    padding: 10px;
-    height: 100px;
-    border-radius: 15px;
-    margin-bottom: 20px;
-  }
-
+<style lang="scss">
   .keyboard-base {
-    background: rgb(29, 48, 57);
+    @apply bg-slate-900/20;
     border-radius: 10px;
-    max-height: 225px;
-    width: 745px;
-    padding: 10px;
+    height: 100%;
+    width: 100%;
+    max-height: max-content;
+    max-width: max-content;
+    padding: 12px;
     border-radius: 12px;
     display: grid;
-    grid-template-columns: repeat(30, 20px);
-    grid-template-rows: repeat(5, 38px);
+    grid-template-columns: repeat(30, 24px);
+    grid-template-rows: repeat(5, 45px);
     grid-gap: 5px;
+    user-select: none;
   }
 
   .key {
-    background-color: rgb(1, 3, 29);
-    border: 2px solid #00ffc4;
     border-radius: 5px;
     grid-column: span 2;
-    font-size: 16px;
+    font-size: 14px;
     text-align: center;
     padding-top: 10px;
-    color: #b6d7f4;
-    box-shadow: 1px 1x 10px #57eafd;
+    @apply bg-slate-900/30 border relative border-slate-700/30 hover:bg-slate-800/30 hover:border-slate-400/50;
   }
 
-  .key:hover {
-    border: 1px solid #8900ff;
-    box-shadow: 1px 1x 10px #8900ff;
+  .active:before {
+    @apply z-0 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-8 w-8 rounded-full;
+    content: "";
+    animation: activeKey ease-in-out forwards;
+    animation-duration: 1s;
+  }
+  @keyframes activeKey {
+    from {
+      background-color: #10b981;
+      opacity: 1;
+    }
+    to {
+      background-color: rgba(48, 76, 97, 0.3);
+      opacity: 0;
+    }
+  }
+
+  .backSlash {
+    grid-column: span 3;
+  }
+
+  .fn {
+    grid-column: span 2;
   }
 
   .delete {
@@ -95,12 +123,16 @@
     grid-column: span 3;
   }
 
-  .command {
+  .rightCtrl {
     grid-column: span 3;
+  }
+
+  .command {
+    grid-column: span 4;
     font-size: 14px;
   }
 
   .space {
-    grid-column: span 13;
+    grid-column: span 10;
   }
 </style>
