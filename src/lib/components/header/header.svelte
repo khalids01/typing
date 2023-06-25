@@ -5,7 +5,6 @@
 
 	const drawerSettings = {
 		id: 'example-3',
-		// Provide your property overrides:
 		bgDrawer: 'bg-slate-900/60 text-white',
 		bgBackdrop:
 			'bg-gradient-to-tr from-slate-900/80 via-slate-900/70 to-blue-900/40 backdrop-blur-[2px]',

@@ -3,6 +3,7 @@
   import { scores, getScores } from "$lib/store/typing";
   import Icon from "@iconify/svelte";
   import { popup } from "@skeletonlabs/skeleton";
+  
   let score = getScores;
   scores.subscribe((cScore) => {
     score = cScore;
