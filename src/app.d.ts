@@ -1,4 +1,3 @@
-
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 // and what to do when importing types
@@ -17,3 +16,10 @@ type LetterStatus =
   | "wrong active";
 type LetterElements = Map<number, { element: string; status: LetterStatus }>;
 type Info = "speed" | "accuracy" | "errors";
+
+interface Settings {
+  [key]: {
+    value: boolean;
+    label: string;
+  };
+}
