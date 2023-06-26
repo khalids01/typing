@@ -2,13 +2,13 @@
   import { Container, Flex } from "$lib/components/ui";
   import { scores, getScores } from "$lib/store/typing";
   import Icon from "@iconify/svelte";
-  import { popup } from "@skeletonlabs/skeleton";
-  
+  // import { popup } from "@skeletonlabs/skeleton";
+  import type { PopupSettings } from "@skeletonlabs/skeleton";
+
   let score = getScores;
   scores.subscribe((cScore) => {
     score = cScore;
   });
-  import type { PopupSettings } from "@skeletonlabs/skeleton";
 
   const popupSettings: PopupSettings = {
     event: "click",
@@ -32,21 +32,15 @@
         Errors : <span>{score.errors}</span>
       </p>
     </Flex>
-
     <button
       type="button"
       class="text-2xl btn-icon btn-icon-sm variant-ghost-surface inline-grid place-items-center"
-      use:popup={popupSettings}
     >
       <Icon icon="ph:gear-light" />
     </button>
   </div>
 </Container>
 
-<div class="card p-4 w-72 shadow-xl" data-popup="settings">
-  <div><p>Demo Content</p></div>
-  <div class="arrow bg-surface-100-800-token" />
-</div>
 
 <style lang="scss">
   .container {
