@@ -4,6 +4,7 @@
   import { scores, getScores } from "$lib/store/typing";
   import Icon from "@iconify/svelte";
   import { SlideToggle } from "@skeletonlabs/skeleton";
+  import { onMount } from "svelte";
 
   let settings: Settings = {};
   settingsStore.subscribe((s) => (settings = s));
@@ -33,7 +34,7 @@
     hideModal();
   };
 
-  console.log(settings);
+
 </script>
 
 <svelte:body class="relative z-0" />
@@ -46,12 +47,21 @@
   <div class="content" bind:this={modalContent}>
     <div class="mx-auto max-w-42 border px-8 py-6 rounded-xl">
       {#each Object.values(settings) as setting, index}
-        <div class="flex justify-between items-center px-4 py-3 rounded-sm">
+        <div
+          class="flex gap-4 justify-between items-center px-4 py-3 rounded-sm"
+        >
           {#if typeof setting.value == "boolean"}
-            <span class="text-slate-50">
+            <span
+              class="text-slate-50"
+            >
               {setting?.label}
             </span>
-            <SlideToggle size='sm' style={`transform: scale(0.8)`} name={setting.label} bind:checked={setting.value} />
+            <SlideToggle
+              size="sm"
+              style={`transform: scale(0.8)`}
+              name={setting.label}
+              bind:checked={setting.value}
+            />
           {/if}
         </div>
       {/each}

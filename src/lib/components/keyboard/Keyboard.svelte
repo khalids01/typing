@@ -1,15 +1,13 @@
-<script>
-  import { afterUpdate } from "svelte";
+<script lang="ts">
   import { keyboardRowsData } from "./keyData";
 
-  /**
-   * @type {number}
-   */
   let activeKeyCode = -1;
 
-  afterUpdate(() => {});
-  // @ts-ignore
-  const handleWindowKeyDown = (e) => {
+  const handleWindowKeyDown = (
+    e: KeyboardEvent & {
+      currentTarget: EventTarget & Window;
+    }
+  ) => {
     activeKeyCode = e.keyCode;
   };
 
@@ -18,10 +16,14 @@
       activeKeyCode = -1;
     }, 500);
   };
+
 </script>
 
-<svelte:window on:keydown={handleWindowKeyDown} on:keyup={handleWindowKeyUp} />
-<section class=" hidden xl:block" >
+<svelte:window
+  on:keydown={(e) => handleWindowKeyDown}
+  on:keyup={handleWindowKeyUp}
+/>
+<section class=" hidden xl:block">
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
   <div tabindex="0" id="keyboardBase" class="keyboard-base mx-auto mt-8">
     {#each keyboardRowsData as row}

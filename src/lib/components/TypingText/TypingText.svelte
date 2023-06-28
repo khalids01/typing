@@ -87,11 +87,21 @@
       bind:this={divRef}
       on:focus={handleFocus}
       on:blur={handleBlur}
-      class={`text-white border border-white/80 px-6 py-8 rounded-xl letters ${
-        textFocused ? "opacity-100" : "opacity-50"
+      class={`text-white  border-white/80 px-6 py-8 rounded-xl letters relative ${
+        textFocused ? "opacity-100 border" : ""
       }`}
       style={`--active: ${activeIndex}`}
     >
+      {#if !textFocused}
+        <div
+          class="h-full w-full rounded-xl z-0 absolute backdrop-blur-md bg-slate-800/30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 blur-sm"
+        />
+        <div
+          class="cursor-pointer grid z-10 h-full w-full place-items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-200"
+        >
+          Click here
+        </div>
+      {/if}
       {#if sLetters.size > 0}
         {#each Array.from(sLetters.keys()) as key, index}
           <span
