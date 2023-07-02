@@ -4,7 +4,6 @@
   import { scores, getScores } from "$lib/store/typing";
   import Icon from "@iconify/svelte";
   import { SlideToggle } from "@skeletonlabs/skeleton";
-  import { onMount } from "svelte";
 
   let settings: Settings = {};
   settingsStore.subscribe((s) => (settings = s));
@@ -15,6 +14,13 @@
   scores.subscribe((cScore) => {
     score = cScore;
   });
+
+  function handleToggle(setting: any, value: boolean) {
+    settingsStore.update((s)=>{
+      s['keyboard'] =  value
+      return s
+    })
+  }
 
   const showModal = () => {
     modalToShow = true;
@@ -33,8 +39,6 @@
 
     hideModal();
   };
-
-
 </script>
 
 <svelte:body class="relative z-0" />
@@ -46,21 +50,24 @@
 >
   <div class="content" bind:this={modalContent}>
     <div class="mx-auto max-w-42 border px-8 py-6 rounded-xl">
-      {#each Object.values(settings) as setting, index}
+      {#each Object.entries(settings) as setting, index}
         <div
           class="flex gap-4 justify-between items-center px-4 py-3 rounded-sm"
         >
-          {#if typeof setting.value == "boolean"}
-            <span
-              class="text-slate-50"
-            >
-              {setting?.label}
+          {#if typeof setting[1] == "boolean"}
+            <span class="text-slate-50">
+              {setting[0].charAt(0).toUpperCase() +
+                setting[0].slice(1).replaceAll("_", " ")}
             </span>
             <SlideToggle
               size="sm"
               style={`transform: scale(0.8)`}
-              name={setting.label}
-              bind:checked={setting.value}
+              name={setting[0]}
+              checked={setting[1]}
+              on:change={(e) => {
+                // @ts-ignore
+                handleToggle(setting, e?.target?.checked);
+              }}
             />
           {/if}
         </div>

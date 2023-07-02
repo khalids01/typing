@@ -87,8 +87,8 @@
       bind:this={divRef}
       on:focus={handleFocus}
       on:blur={handleBlur}
-      class={`text-white  border-white/80 px-6 py-8 rounded-xl letters relative ${
-        textFocused ? "opacity-100 border" : ""
+      class={`text-white border  px-6 py-8 rounded-xl letters relative ${
+        textFocused ? "opacity-100 border-white/80" : "border-transparent"
       }`}
       style={`--active: ${activeIndex}`}
     >

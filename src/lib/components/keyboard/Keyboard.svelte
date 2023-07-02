@@ -1,7 +1,13 @@
 <script lang="ts">
   import { keyboardRowsData } from "./keyData";
+  import { settings } from "$lib/store/settings";
 
   let activeKeyCode = -1;
+  let showKeyboard = true;
+
+  settings.subscribe((s) => {
+    showKeyboard = s.keyboard;
+  });
 
   const handleWindowKeyDown = (
     e: KeyboardEvent & {
@@ -19,11 +25,8 @@
 
 </script>
 
-<svelte:window
-  on:keydown={(e) => handleWindowKeyDown}
-  on:keyup={handleWindowKeyUp}
-/>
-<section class=" hidden xl:block">
+<svelte:window on:keydown={handleWindowKeyDown} on:keyup={handleWindowKeyUp} />
+<section class=" hidden lg:block {showKeyboard ? '' : '!hidden'}">
   <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
   <div tabindex="0" id="keyboardBase" class="keyboard-base mx-auto mt-8">
     {#each keyboardRowsData as row}
