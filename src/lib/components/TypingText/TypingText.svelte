@@ -109,7 +109,7 @@
             class={textFocused ? sLetters.get(key).status : ""}
           >
             {sLetters.get(key).element === " "
-              ? "__"
+              ? "␣"
               : sLetters.get(key).element}</span
           >
         {/each}

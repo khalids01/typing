@@ -18,8 +18,38 @@ type LetterElements = Map<number, { element: string; status: LetterStatus }>;
 type Info = "speed" | "accuracy" | "errors";
 
 interface Settings {
-  [key]: {
-    value: boolean;
-    label: string;
-  };
+  keyboard: boolean;
+  punctuation: boolean;
+  capital_letters: boolean;
+  bar_white_space: boolean;
+  current_key:
+    | "A"
+    | "B"
+    | "C"
+    | "D"
+    | "E"
+    | "F"
+    | "G"
+    | "H"
+    | "I"
+    | "J"
+    | "K"
+    | "L"
+    | "M"
+    | "N"
+    | "O"
+    | "P"
+    | "Q"
+    | "R"
+    | "S"
+    | "T"
+    | "U"
+    | "V"
+    | "W"
+    | "X"
+    | "Y"
+    | "Z";
+  font_size: "sm" | "md" | "lg" | "xl";
+  text_type: "practice" | "quotes";
+  text_length: "sm" | "md" | "lg";
 }

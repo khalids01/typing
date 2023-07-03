@@ -1,6 +1,7 @@
 <script lang="ts">
   import { keyboardRowsData } from "./keyData";
   import { settings } from "$lib/store/settings";
+  import { fade } from "svelte/transition";
 
   let activeKeyCode = -1;
   let showKeyboard = true;
@@ -22,28 +23,30 @@
       activeKeyCode = -1;
     }, 500);
   };
-
 </script>
 
+<!-- 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 -->
 <svelte:window on:keydown={handleWindowKeyDown} on:keyup={handleWindowKeyUp} />
-<section class=" hidden lg:block {showKeyboard ? '' : '!hidden'}">
-  <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
-  <div tabindex="0" id="keyboardBase" class="keyboard-base mx-auto mt-8">
-    {#each keyboardRowsData as row}
-      {#each row.keys as key}
-        <div
-          class={`key ${key?.class ? key.class : ""} ${
-            activeKeyCode == key.data ? "active" : ""
-          }`}
-        >
-          <span class="relative z-10">
-            {key.value}
-          </span>
-        </div>
+{#if showKeyboard}
+  <section transition:fade={{duration: 300}} class=" hidden lg:block">
+    <!-- svelte-ignore a11y-no-noninteractive-tabindex -->
+    <div tabindex="0" id="keyboardBase" class="keyboard-base mx-auto mt-8">
+      {#each keyboardRowsData as row}
+        {#each row.keys as key}
+          <div
+            class={`key ${key?.class ? key.class : ""} ${
+              activeKeyCode == key.data ? "active" : ""
+            }`}
+          >
+            <span class="relative z-10">
+              {key.value}
+            </span>
+          </div>
+        {/each}
       {/each}
-    {/each}
-  </div>
-</section>
+    </div>
+  </section>
+{/if}
 
 <style lang="scss">
   .keyboard-base {
