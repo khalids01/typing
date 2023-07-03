@@ -14,7 +14,8 @@
 
   function handleToggle(setting: any, value: boolean) {
     settingsStore.update((s) => {
-      s["keyboard"] = value;
+      // @ts-ignore
+      s[setting[0]] = value;
       return s;
     });
   }
@@ -30,7 +31,7 @@
   };
   let value: number = 0;
 
-  const font_sizes = ["sm", "md", "lg", "xl"];
+  const font_sizes = ["sm", "md", "lg"];
   const text_types = ["practice", "quotes"];
   const text_length = ["sm", "md", "lg"];
 </script>
@@ -47,7 +48,7 @@
     <div class="content" bind:this={modalContent}>
       <div
         transition:slide
-        class="mx-auto bg-slate-950/20 max-w-42 border border-slate-300/20 p-6 rounded-xl flex gap-4 lg:gap-8"
+        class="mx-auto bg-slate-950/20 max-w-42 border border-slate-300/20 p-6 rounded-xl flex gap-y-6"
       >
         <ul class="settings-list pt-2">
           <li>
@@ -57,7 +58,7 @@
                 <RadioItem
                   bind:group={$settingsStore.font_size}
                   name="justify"
-                  value={size === "md" ? "base" : size}
+                  value={size}
                   class="capitalize"
                 >
                   {size}
@@ -99,10 +100,12 @@
           </li>
         </ul>
 
-        <div>
+        <div class="lg:border-l border-slate-300/20 lg:pl-4 lg:ml-4">
           {#each Object.entries(settings) as setting, index}
-            <div class="flex gap-4 justify-between items-center p-3 rounded-sm">
-              {#if typeof setting[1] === "boolean"}
+            {#if typeof setting[1] === "boolean"}
+              <div
+                class="flex gap-4 justify-between items-center p-3 rounded-sm"
+              >
                 <span class="text-white/70">
                   {setting[0].charAt(0).toUpperCase() +
                     setting[0].slice(1).replaceAll("_", " ")}
@@ -118,8 +121,8 @@
                     handleToggle(setting, e?.target?.checked);
                   }}
                 />
-              {/if}
-            </div>
+              </div>
+            {/if}
           {/each}
         </div>
       </div>
@@ -133,7 +136,7 @@
     .content {
       @apply m-auto h-max w-max;
       .settings-list li {
-        @apply flex items-center justify-between gap-6 text-white/70 mb-3;
+        @apply flex items-center justify-between gap-6 text-white/80 mb-4 brightness-90;
       }
     }
   }

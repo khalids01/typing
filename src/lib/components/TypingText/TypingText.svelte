@@ -1,6 +1,7 @@
 <script>
   import { afterUpdate, onMount } from "svelte";
-  import { Container, Flex } from "$lib/components/ui";
+  import { Flex } from "$lib/components/ui";
+  import { settings } from "$lib/store/settings";
   import {
     getItem,
     letters,
@@ -75,6 +76,7 @@
       updateStatus({ index: activeIndex, status: "wrong active" });
     }
   };
+  $: console.log($settings.bar_white_space);
 </script>
 
 <svelte:window on:keypress={handleWindowKeyPress} />
@@ -90,14 +92,20 @@
       class={`text-white border  px-6 py-8 rounded-xl letters relative ${
         textFocused ? "opacity-100 border-white/80" : "border-transparent"
       }`}
-      style={`--active: ${activeIndex}`}
+      style={`--active: ${activeIndex}; --size: ${
+        $settings.font_size === "sm"
+          ? "22px"
+          : $settings.font_size === "md"
+          ? "26px"
+          : "30px"
+      }`}
     >
       {#if !textFocused}
         <div
           class="h-full w-full rounded-xl z-0 absolute backdrop-blur-md bg-slate-800/30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 blur-sm"
         />
         <div
-          class="cursor-pointer grid z-10 h-full w-full place-items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-200"
+          class="cursor-pointer grid z-10 h-full w-full place-items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-200 text-xl"
         >
           Click here
         </div>
@@ -106,12 +114,18 @@
         {#each Array.from(sLetters.keys()) as key, index}
           <span
             id={index.toString()}
-            class={textFocused ? sLetters.get(key).status : ""}
+            class={`${textFocused ? sLetters.get(key).status : ""} `}
           >
-            {sLetters.get(key).element === " "
-              ? "␣"
-              : sLetters.get(key).element}</span
-          >
+            {#if sLetters.get(key).element === " "}
+              {#if $settings.bar_white_space}
+                ␣
+              {:else}
+                <span class="h-[1ch] w-[0.6ch]"/>
+              {/if}
+            {:else}
+              {sLetters.get(key).element}
+            {/if}
+          </span>
         {/each}
       {/if}
     </div>
@@ -125,7 +139,6 @@
     margin-inline: auto;
   }
   .letters {
-    font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.6;
     span {
@@ -134,6 +147,7 @@
       justify-content: center;
       padding-inline: 0.1ch;
       align-items: center;
+      font-size: var(--size);
       //   border-radius: 4px;
       &.active {
         animation: activeLetter 1.5s infinite;

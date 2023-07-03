@@ -49,7 +49,7 @@ interface Settings {
     | "X"
     | "Y"
     | "Z";
-  font_size: "sm" | "md" | "lg" | "xl";
+  font_size: "sm" | "md" | "lg" ;
   text_type: "practice" | "quotes";
   text_length: "sm" | "md" | "lg";
 }
