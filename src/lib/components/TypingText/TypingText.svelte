@@ -102,7 +102,7 @@
     >
       {#if !textFocused}
         <div
-          class="h-full w-full rounded-xl z-0 absolute backdrop-blur-md bg-slate-800/30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 blur-sm"
+          class="h-full w-full rounded-xl z-0 absolute backdrop-blur-sm bg-slate-800/30 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 blur-sm"
         />
         <div
           class="cursor-pointer grid z-10 h-full w-full place-items-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-200 text-xl"
@@ -148,6 +148,7 @@
       padding-inline: 0.1ch;
       align-items: center;
       font-size: var(--size);
+      user-select: none;
       //   border-radius: 4px;
       &.active {
         animation: activeLetter 1.5s infinite;
