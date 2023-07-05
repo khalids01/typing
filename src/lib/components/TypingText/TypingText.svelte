@@ -76,7 +76,7 @@
       updateStatus({ index: activeIndex, status: "wrong active" });
     }
   };
-  $: console.log($settings.bar_white_space);
+  
 </script>
 
 <svelte:window on:keypress={handleWindowKeyPress} />

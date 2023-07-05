@@ -15,6 +15,7 @@ export let timer = writable({
 });
 let errors: any[] = [];
 let rights: any[] = [];
+let total: any[] = [];
 
 export const startTimer = () => {
   const date = new Date();
@@ -95,9 +96,9 @@ export const resetLetters = () => {
   resetTimer();
 };
 
-letters.subscribe((currentLetters) => {
-  currentLetters.entries();
-});
+// letters.subscribe((currentLetters) => {
+//   currentLetters.entries();
+// });
 
 const getWords = (s: string) => {
   let words: any[] = [];
@@ -112,12 +113,8 @@ const getWords = (s: string) => {
   return words.length + Math.floor(spacesCount / 3);
 };
 
-const updateScores = (cLetters: typeof getLetters) => {
+const updateScores = () => {
   let words = getWords(str);
-
-  let currentTotalLetters = Array.from(cLetters.values()).map(
-    (item) => item.element
-  );
 
   scores.update((currentScore) => {
     let newScore = currentScore;
@@ -126,9 +123,21 @@ const updateScores = (cLetters: typeof getLetters) => {
     newScore.errors = `${errors.length} letters`;
     newScore.speed = `${(words / (tInSec / 60)).toFixed(1)} wpm`;
     newScore.accuracy = `${(
-      (rights.length / currentTotalLetters.length) *
+      (rights.length / total.length) *
       100
     ).toFixed(1)}%`;
+
+    // console.clear();
+    // console.table({
+    //   time: tInSec / 60,
+    //   speed: `${(words / (tInSec / 60)).toFixed(1)} wpm`,
+    // });
+    // console.table({
+    //   rightsLength: rights.length,
+    //   total: total.length,
+    // });
+
+    // console.log({ rights });
 
     return newScore;
   });
@@ -139,19 +148,27 @@ const updateScores = (cLetters: typeof getLetters) => {
 
 export const typingDone = () => {
   let currentLetters = get(letters);
+  errors = [];
+  rights = [];
+  total = [];
+
+  scores.set({
+    speed: "0",
+    accuracy: "0",
+    errors: "0",
+  });
+
   Array.from(currentLetters.values()).forEach((item) => {
     if (item.status.includes("wrong")) {
       errors.push(item);
     }
-  });
-
-  Array.from(currentLetters.values()).forEach((item) => {
     if (item.status.includes("right")) {
       rights.push(item);
     }
+    total.push(item);
   });
 
-  updateScores(getLetters);
+  updateScores();
   errors = [];
   rights = [];
 };

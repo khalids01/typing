@@ -498,6 +498,13 @@ export const quotes = [
   "The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack in will.",
 ];
 
+export const filterCapitalLetter = (text: string) => {
+  return text
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 export function filterPunctuation(text: string) {
   const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
   return text.replace(punctuationRegex, "");
