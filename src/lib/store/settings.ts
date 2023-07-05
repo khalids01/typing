@@ -6,9 +6,9 @@ export let settings = writable<Settings>({
   capital_letters: false,
   bar_white_space: true,
   current_key: "A",
-  font_size: 'lg',
+  font_size: 'md',
   text_type: "practice",
-  text_length: "md",
+  text_length: "sm",
 });
 
 export let getSettings = get(settings);

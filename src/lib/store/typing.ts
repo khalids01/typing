@@ -1,5 +1,7 @@
 import { get, writable } from "svelte/store";
 import { allStories, getNextStory } from "./texts";
+import { settings } from "./settings";
+import { allText } from "$lib/store/data";
 
 let currentStoryIndex = 0;
 
@@ -13,6 +15,7 @@ export let timer = writable({
   start: 0,
   end: 1,
 });
+
 let errors: any[] = [];
 let rights: any[] = [];
 let total: any[] = [];
@@ -46,9 +49,28 @@ export const resetTimer = () => {
 
 let str = allStories[currentStoryIndex];
 
+let text = "";
+settings.subscribe((newSettings) => {
+  if (newSettings.text_type === "practice") {
+    text = allText.getShortMeaningfulText(newSettings.current_key, {
+      size: newSettings.text_length,
+      punctuation: newSettings.punctuation,
+      capitalLetters: newSettings.capital_letters,
+    });
+  } else if (newSettings.text_type === "strict-practice") {
+    text = allText.getShortPracticeText(newSettings.current_key, {
+      size: newSettings.text_length,
+      punctuation: newSettings.punctuation,
+      capitalLetters: newSettings.capital_letters,
+    });
+  } else {
+    text = allText.getQuot();
+  }
+});
+
 let strMap = new Map();
 
-Array.from(str).forEach((element, index) => {
+Array.from(text).forEach((element, index) => {
   strMap.set(index, {
     element,
     status: "not-active",
@@ -92,7 +114,7 @@ export const updateStatus = ({
 };
 
 export const resetLetters = () => {
-  setStrMap(str);
+  setStrMap(text);
   resetTimer();
 };
 
@@ -114,7 +136,7 @@ const getWords = (s: string) => {
 };
 
 const updateScores = () => {
-  let words = getWords(str);
+  let words = getWords(text);
 
   scores.update((currentScore) => {
     let newScore = currentScore;
@@ -122,10 +144,7 @@ const updateScores = () => {
     let tInSec = t.end - t.start;
     newScore.errors = `${errors.length} letters`;
     newScore.speed = `${(words / (tInSec / 60)).toFixed(1)} wpm`;
-    newScore.accuracy = `${(
-      (rights.length / total.length) *
-      100
-    ).toFixed(1)}%`;
+    newScore.accuracy = `${((rights.length / total.length) * 100).toFixed(1)}%`;
 
     // console.clear();
     // console.table({
@@ -142,8 +161,8 @@ const updateScores = () => {
     return newScore;
   });
 
-  setStrMap(getNextStory(currentStoryIndex));
-  currentStoryIndex++;
+  setStrMap(text);
+  allText.next();
 };
 
 export const typingDone = () => {

@@ -12,6 +12,7 @@
     endTimer,
   } from "$lib/store/typing";
 
+
   let activeIndex = 0;
   let textFocused = false;
   let pressedKey = "";
@@ -76,7 +77,7 @@
       updateStatus({ index: activeIndex, status: "wrong active" });
     }
   };
-  
+
 </script>
 
 <svelte:window on:keypress={handleWindowKeyPress} />
@@ -120,7 +121,7 @@
               {#if $settings.bar_white_space}
                 ␣
               {:else}
-                <span class="h-[1ch] w-[0.6ch]"/>
+                <span class="h-[1ch] w-[0.6ch]" />
               {/if}
             {:else}
               {sLetters.get(key).element}

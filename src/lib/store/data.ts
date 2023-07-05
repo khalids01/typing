@@ -1,4 +1,4 @@
-export const shortMeaningFullTextsByLetters = [
+export const shortMeaningFullTextsByLettersData = [
   {
     letter: "A",
     texts: [
@@ -209,7 +209,7 @@ export const shortMeaningFullTextsByLetters = [
   },
 ];
 
-export const shortPracticeTextByLetters = [
+export const shortPracticeTextByLettersData = [
   {
     letter: "A",
     texts: [
@@ -420,7 +420,7 @@ export const shortPracticeTextByLetters = [
   },
 ];
 
-export const quotes = [
+export const quotesData = [
   "Success is not final, failure is not fatal: It is the courage to continue that counts",
   "Believe you can and you're halfway there",
   "The only limit to our realization of tomorrow will be our doubts of today",
@@ -509,3 +509,202 @@ export function filterPunctuation(text: string) {
   const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
   return text.replace(punctuationRegex, "");
 }
+
+interface TextByLetter {
+  letter: Settings["current_key"] | string;
+  texts: string[];
+}
+
+interface TextOptions {
+  size: "sm" | "md" | "lg";
+  punctuation?: boolean;
+  capitalLetters?: boolean;
+}
+
+interface TextByLetter {
+  letter: string;
+  texts: string[];
+}
+
+interface TextOptions {
+  size: "sm" | "md" | "lg";
+  punctuation?: boolean;
+  capitalLetters?: boolean;
+}
+
+class Text {
+  private shortPracticeTextByLetters: TextByLetter[];
+  private shortMeaningfulTextsByLetters: TextByLetter[];
+  private quotes: string[];
+
+  constructor(
+    shortPracticeTextByLetters: TextByLetter[],
+    shortMeaningfulTextsByLetters: TextByLetter[],
+    quotes: string[]
+  ) {
+    this.shortPracticeTextByLetters = shortPracticeTextByLetters;
+    this.shortMeaningfulTextsByLetters = shortMeaningfulTextsByLetters;
+    this.quotes = quotes;
+  }
+
+  private formatText(
+    texts: string[],
+    size: TextOptions["size"],
+    punctuation: boolean,
+    capitalLetters: boolean
+  ): string {
+    let formattedText = texts.join(" ");
+
+    if (!punctuation) {
+      const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
+      formattedText = formattedText.replace(punctuationRegex, "");
+    }
+
+    if (!capitalLetters) {
+      formattedText = formattedText.toLowerCase();
+    }
+
+    switch (size) {
+      case "sm":
+        formattedText = formattedText.substr(0, texts[0].length);
+        break;
+      case "md":
+      case "lg":
+        formattedText = texts.join(" ");
+        break;
+    }
+
+    return formattedText;
+  }
+
+  public getShortMeaningfulText(letter: string, options: TextOptions): string {
+    const { size, punctuation = true, capitalLetters = true } = options;
+    const textData = this.shortMeaningfulTextsByLetters.find(
+      (item) => item.letter === letter
+    );
+
+    if (!textData || !textData.texts.length) {
+      return "";
+    }
+
+    const texts = textData.texts;
+
+    let formattedText = "";
+
+    switch (size) {
+      case "sm":
+        formattedText = this.formatText(
+          [texts[0]],
+          size,
+          punctuation,
+          capitalLetters
+        );
+        break;
+
+      case "md":
+        formattedText = this.formatText(
+          [texts[0], texts[1]],
+          size,
+          punctuation,
+          capitalLetters
+        );
+        break;
+
+      case "lg":
+        formattedText = this.formatText(
+          texts,
+          size,
+          punctuation,
+          capitalLetters
+        );
+        break;
+    }
+
+    return formattedText;
+  }
+
+  public getShortPracticeText(letter: string, options: TextOptions): string {
+    const { size, punctuation = true, capitalLetters = true } = options;
+    const textData = this.shortPracticeTextByLetters.find(
+      (item) => item.letter === letter
+    );
+
+    if (!textData || !textData.texts.length) {
+      return "";
+    }
+
+    const texts = textData.texts;
+
+    let formattedText = "";
+
+    switch (size) {
+      case "sm":
+        formattedText = this.formatText(
+          [texts[0]],
+          size,
+          punctuation,
+          capitalLetters
+        );
+        break;
+
+      case "md":
+        formattedText = this.formatText(
+          [texts[0], texts[1]],
+          size,
+          punctuation,
+          capitalLetters
+        );
+        break;
+
+      case "lg":
+        formattedText = this.formatText(
+          texts,
+          size,
+          punctuation,
+          capitalLetters
+        );
+        break;
+    }
+
+    return formattedText;
+  }
+
+  public getQuot(): string {
+    return this.quotes[Math.floor(Math.random() * this.quotes.length)];
+  }
+
+  // Additional feature: Get next string in the texts array
+  private activeLetter: string = "";
+  private activeIndex: number = 0;
+
+  public next(): string {
+    if (!this.activeLetter) {
+      return "";
+    }
+
+    const textData = this.shortPracticeTextByLetters.find(
+      (item) => item.letter === this.activeLetter
+    );
+
+    if (!textData || !textData.texts.length) {
+      return "";
+    }
+
+    const texts = textData.texts;
+
+    if (this.activeIndex >= texts.length - 1) {
+      // If there is no next element, return the first element
+      this.activeIndex = 0;
+    } else {
+      this.activeIndex++;
+    }
+
+    return texts[this.activeIndex];
+  }
+}
+
+export const allText = new Text(
+  shortPracticeTextByLettersData,
+  shortMeaningFullTextsByLettersData,
+  quotesData
+);

@@ -50,6 +50,6 @@ interface Settings {
     | "Y"
     | "Z";
   font_size: "sm" | "md" | "lg" ;
-  text_type: "practice" | "quotes";
+  text_type: "practice" | "quotes" | 'strict-practice';
   text_length: "sm" | "md" | "lg";
 }
