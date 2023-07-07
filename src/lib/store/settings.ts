@@ -8,7 +8,7 @@ export let settings = writable<Settings>({
   current_key: "A",
   font_size: 'md',
   text_type: "practice",
-  text_length: "sm",
+  text_length: "lg",
 });
 
 export let getSettings = get(settings);

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { afterUpdate, onMount } from "svelte";
   import { Flex } from "$lib/components/ui";
   import { settings } from "$lib/store/settings";
@@ -12,7 +12,6 @@
     endTimer,
   } from "$lib/store/typing";
 
-
   let activeIndex = 0;
   let textFocused = false;
   let pressedKey = "";
@@ -21,10 +20,8 @@
   letters.subscribe((newLetters) => {
     sLetters = newLetters;
   });
-  /**
-   * @type {HTMLDivElement}
-   */
-  let divRef;
+
+  let divRef: HTMLDivElement;
 
   onMount(() => {
     divRef.focus();
@@ -77,7 +74,6 @@
       updateStatus({ index: activeIndex, status: "wrong active" });
     }
   };
-
 </script>
 
 <svelte:window on:keypress={handleWindowKeyPress} />

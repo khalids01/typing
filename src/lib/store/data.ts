@@ -461,34 +461,21 @@ export const quotesData = [
   "You don't have to be great to start, but you have to start to be great.",
   "Your time is limited, don't waste it living someone else's life.",
   "Success is walking from failure to failure with no loss of enthusiasm.",
-  "Dream big and dare to fail.",
   "The best way to predict the future is to create it.",
   "The road to success and the road to failure are almost exactly the same.",
-  "The only limit to our realization of tomorrow will be our doubts of today.",
-  "Great minds discuss ideas; average minds discuss events; small minds discuss people.",
   "Success is not the key to happiness. Happiness is the key to success.",
   "The best revenge is massive success.",
-  "Your time is limited, don't waste it living someone else's life.",
-  "The only person you should try to be better than is the person you were yesterday.",
   "The future belongs to those who believe in the beauty of their dreams.",
   "The harder I work, the luckier I get.",
   "Don't watch the clock; do what it does. Keep going.",
-  "Opportunities don't happen. You create them.",
-  "Dream big and dare to fail.",
   "Success usually comes to those who are too busy to be looking for it.",
   "Believe you can and you're halfway there.",
   "In the middle of every difficulty lies opportunity.",
   "The only way to do great work is to love what you do.",
   "Hardships often prepare ordinary people for an extraordinary destiny.",
-  "The best way to predict the future is to create it.",
-  "The road to success and the road to failure are almost exactly the same.",
   "The only limit to our realization of tomorrow will be our doubts of today.",
-  "Success is not about the destination, it's about the journey.",
   "Great minds discuss ideas; average minds discuss events; small minds discuss people.",
   "The greatest glory in living lies not in never falling, but in rising every time we fall.",
-  "The future depends on what you do today.",
-  "You don't have to be great to start, but you have to start to be great.",
-  "The biggest risk is not taking any risk.",
   "Success is walking from failure to failure with no loss of enthusiasm.",
   "The best revenge is to be unlike him who performed the injury.",
   "The pessimist complains about the wind; the optimist expects it to change; the realist adjusts the sails.",
@@ -532,10 +519,42 @@ interface TextOptions {
   capitalLetters?: boolean;
 }
 
+export const keysArr = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+];
+
+
 class Text {
   private shortPracticeTextByLetters: TextByLetter[];
   private shortMeaningfulTextsByLetters: TextByLetter[];
   private quotes: string[];
+
+  private currentIndex = 0;
 
   constructor(
     shortPracticeTextByLetters: TextByLetter[],
@@ -555,15 +574,6 @@ class Text {
   ): string {
     let formattedText = texts.join(" ");
 
-    if (!punctuation) {
-      const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
-      formattedText = formattedText.replace(punctuationRegex, "");
-    }
-
-    if (!capitalLetters) {
-      formattedText = formattedText.toLowerCase();
-    }
-
     switch (size) {
       case "sm":
         formattedText = formattedText.substr(0, texts[0].length);
@@ -577,8 +587,48 @@ class Text {
     return formattedText;
   }
 
+  private textSize = ({
+    texts,
+    size,
+    punctuation,
+    capitalLetters,
+  }: {
+    texts: string[];
+    size: Settings["text_length"];
+    punctuation: boolean;
+    capitalLetters: boolean;
+  }): string => {
+    let sizedText = "";
+    switch (size) {
+      case "sm":
+        sizedText = this.formatText(
+          [texts[0]],
+          size,
+          punctuation,
+          capitalLetters
+        );
+        break;
+
+      case "md":
+        sizedText = this.formatText(
+          [texts[0], texts[1]],
+          size,
+          punctuation,
+          capitalLetters
+        );
+        break;
+
+      case "lg":
+        sizedText = this.formatText(texts, size, punctuation, capitalLetters);
+        break;
+    }
+
+    return sizedText;
+  };
+
   public getShortMeaningfulText(letter: string, options: TextOptions): string {
     const { size, punctuation = true, capitalLetters = true } = options;
+
     const textData = this.shortMeaningfulTextsByLetters.find(
       (item) => item.letter === letter
     );
@@ -589,36 +639,12 @@ class Text {
 
     const texts = textData.texts;
 
-    let formattedText = "";
-
-    switch (size) {
-      case "sm":
-        formattedText = this.formatText(
-          [texts[0]],
-          size,
-          punctuation,
-          capitalLetters
-        );
-        break;
-
-      case "md":
-        formattedText = this.formatText(
-          [texts[0], texts[1]],
-          size,
-          punctuation,
-          capitalLetters
-        );
-        break;
-
-      case "lg":
-        formattedText = this.formatText(
-          texts,
-          size,
-          punctuation,
-          capitalLetters
-        );
-        break;
-    }
+    let formattedText = this.textSize({
+      texts,
+      size,
+      punctuation,
+      capitalLetters,
+    });
 
     return formattedText;
   }
@@ -635,71 +661,24 @@ class Text {
 
     const texts = textData.texts;
 
-    let formattedText = "";
-
-    switch (size) {
-      case "sm":
-        formattedText = this.formatText(
-          [texts[0]],
-          size,
-          punctuation,
-          capitalLetters
-        );
-        break;
-
-      case "md":
-        formattedText = this.formatText(
-          [texts[0], texts[1]],
-          size,
-          punctuation,
-          capitalLetters
-        );
-        break;
-
-      case "lg":
-        formattedText = this.formatText(
-          texts,
-          size,
-          punctuation,
-          capitalLetters
-        );
-        break;
-    }
+    let formattedText = this.textSize({
+      texts,
+      size,
+      punctuation,
+      capitalLetters,
+    });
 
     return formattedText;
   }
 
-  public getQuot(): string {
-    return this.quotes[Math.floor(Math.random() * this.quotes.length)];
+  public getQuot(index: number): string {
+    return this.quotes[index];
   }
 
   // Additional feature: Get next string in the texts array
-  private activeLetter: string = "";
-  private activeIndex: number = 0;
 
-  public next(): string {
-    if (!this.activeLetter) {
-      return "";
-    }
-
-    const textData = this.shortPracticeTextByLetters.find(
-      (item) => item.letter === this.activeLetter
-    );
-
-    if (!textData || !textData.texts.length) {
-      return "";
-    }
-
-    const texts = textData.texts;
-
-    if (this.activeIndex >= texts.length - 1) {
-      // If there is no next element, return the first element
-      this.activeIndex = 0;
-    } else {
-      this.activeIndex++;
-    }
-
-    return texts[this.activeIndex];
+  public next(): void {
+    this.currentIndex++;
   }
 }
 

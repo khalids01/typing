@@ -1,10 +1,12 @@
 import { get, writable } from "svelte/store";
-import { allStories, getNextStory } from "./texts";
 import { settings } from "./settings";
-import { allText } from "$lib/store/data";
+import { allText, keysArr } from "$lib/store/data";
 
-let currentStoryIndex = 0;
-
+let errors: any[] = [];
+let rights: any[] = [];
+let total: any[] = [];
+let text = writable("");
+let textMap = new Map();
 export let scores = writable({
   speed: "0",
   accuracy: "0",
@@ -16,9 +18,8 @@ export let timer = writable({
   end: 1,
 });
 
-let errors: any[] = [];
-let rights: any[] = [];
-let total: any[] = [];
+export const letters = writable<LetterElements>(textMap);
+let activeIndex = writable(0);
 
 export const startTimer = () => {
   const date = new Date();
@@ -47,40 +48,53 @@ export const resetTimer = () => {
   });
 };
 
-let str = allStories[currentStoryIndex];
-
-let text = "";
 settings.subscribe((newSettings) => {
-  if (newSettings.text_type === "practice") {
-    text = allText.getShortMeaningfulText(newSettings.current_key, {
-      size: newSettings.text_length,
-      punctuation: newSettings.punctuation,
-      capitalLetters: newSettings.capital_letters,
-    });
-  } else if (newSettings.text_type === "strict-practice") {
-    text = allText.getShortPracticeText(newSettings.current_key, {
-      size: newSettings.text_length,
-      punctuation: newSettings.punctuation,
-      capitalLetters: newSettings.capital_letters,
-    });
-  } else {
-    text = allText.getQuot();
+  let activeKeyIndex = keysArr.findIndex(
+    (item) => item === newSettings.current_key
+  );
+
+  if (!newSettings.punctuation) {
+    const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
+    text.update((t) => t.replaceAll(punctuationRegex, ""));
   }
+
+  if (!newSettings.capital_letters) {
+    text.update((t) => t.toLowerCase());
+  }
+
+  if (newSettings.text_type === "practice") {
+    text.update(() =>
+      allText.getShortMeaningfulText(keysArr[activeKeyIndex], {
+        size: newSettings.text_length,
+        punctuation: newSettings.punctuation,
+        capitalLetters: newSettings.capital_letters,
+      })
+    );
+  } else if (newSettings.text_type === "strict-practice") {
+    text.update(() =>
+      allText.getShortPracticeText(keysArr[activeKeyIndex], {
+        size: newSettings.text_length,
+        punctuation: newSettings.punctuation,
+        capitalLetters: newSettings.capital_letters,
+      })
+    );
+  } else {
+    text.update(() => allText.getQuot(get(activeIndex)));
+  }
+  setTextMap(get(text));
 });
 
-let strMap = new Map();
-
-Array.from(text).forEach((element, index) => {
-  strMap.set(index, {
+Array.from(get(text)).forEach((element, index) => {
+  textMap.set(index, {
     element,
     status: "not-active",
   });
 });
 
-const setStrMap = (text: string) => {
+function setTextMap(txt: string) {
   letters.update(() => {
     const newStrMap = new Map();
-    Array.from(text).forEach((element, index) => {
+    Array.from(txt).forEach((element, index) => {
       newStrMap.set(index, {
         element,
         status: "not-active",
@@ -89,9 +103,7 @@ const setStrMap = (text: string) => {
     newStrMap.set(0, { element: newStrMap.get(0).element, status: "active" });
     return newStrMap;
   });
-};
-
-export const letters = writable<LetterElements>(strMap);
+}
 
 export const updateStatus = ({
   index,
@@ -114,13 +126,9 @@ export const updateStatus = ({
 };
 
 export const resetLetters = () => {
-  setStrMap(text);
+  setTextMap(get(text));
   resetTimer();
 };
-
-// letters.subscribe((currentLetters) => {
-//   currentLetters.entries();
-// });
 
 const getWords = (s: string) => {
   let words: any[] = [];
@@ -136,7 +144,7 @@ const getWords = (s: string) => {
 };
 
 const updateScores = () => {
-  let words = getWords(text);
+  let words = getWords(get(text));
 
   scores.update((currentScore) => {
     let newScore = currentScore;
@@ -146,23 +154,15 @@ const updateScores = () => {
     newScore.speed = `${(words / (tInSec / 60)).toFixed(1)} wpm`;
     newScore.accuracy = `${((rights.length / total.length) * 100).toFixed(1)}%`;
 
-    // console.clear();
-    // console.table({
-    //   time: tInSec / 60,
-    //   speed: `${(words / (tInSec / 60)).toFixed(1)} wpm`,
-    // });
-    // console.table({
-    //   rightsLength: rights.length,
-    //   total: total.length,
-    // });
-
-    // console.log({ rights });
-
     return newScore;
   });
+  settings.update((s) => ({
+    ...s,
+    current_key: keysArr[get(activeIndex) + 1] as Settings["current_key"],
+  }));
 
-  setStrMap(text);
-  allText.next();
+  activeIndex.update((index) => index + 1);
+  setTextMap(get(text));
 };
 
 export const typingDone = () => {

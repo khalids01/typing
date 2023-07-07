@@ -17,39 +17,41 @@ type LetterStatus =
 type LetterElements = Map<number, { element: string; status: LetterStatus }>;
 type Info = "speed" | "accuracy" | "errors";
 
+type CurrentKey =
+  | "A"
+  | "B"
+  | "C"
+  | "D"
+  | "E"
+  | "F"
+  | "G"
+  | "H"
+  | "I"
+  | "J"
+  | "K"
+  | "L"
+  | "M"
+  | "N"
+  | "O"
+  | "P"
+  | "Q"
+  | "R"
+  | "S"
+  | "T"
+  | "U"
+  | "V"
+  | "W"
+  | "X"
+  | "Y"
+  | "Z";
+
 interface Settings {
   keyboard: boolean;
   punctuation: boolean;
   capital_letters: boolean;
   bar_white_space: boolean;
-  current_key:
-    | "A"
-    | "B"
-    | "C"
-    | "D"
-    | "E"
-    | "F"
-    | "G"
-    | "H"
-    | "I"
-    | "J"
-    | "K"
-    | "L"
-    | "M"
-    | "N"
-    | "O"
-    | "P"
-    | "Q"
-    | "R"
-    | "S"
-    | "T"
-    | "U"
-    | "V"
-    | "W"
-    | "X"
-    | "Y"
-    | "Z";
-  font_size: "sm" | "md" | "lg" ;
-  text_type: "practice" | "quotes" | 'strict-practice';
+  current_key: CurrentKey;
+  font_size: "sm" | "md" | "lg";
+  text_type: "practice" | "quotes" | "strict-practice";
   text_length: "sm" | "md" | "lg";
 }
