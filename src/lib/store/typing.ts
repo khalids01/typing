@@ -1,11 +1,11 @@
-import { get, writable } from "svelte/store";
+import { get, writable, derived } from "svelte/store";
 import { settings } from "./settings";
 import { allText, keysArr } from "$lib/store/data";
 
 let errors: any[] = [];
 let rights: any[] = [];
 let total: any[] = [];
-let text = writable("");
+let text = "";
 let textMap = new Map();
 export let scores = writable({
   speed: "0",
@@ -48,43 +48,40 @@ export const resetTimer = () => {
   });
 };
 
+
 settings.subscribe((newSettings) => {
   let activeKeyIndex = keysArr.findIndex(
     (item) => item === newSettings.current_key
   );
 
+  if (newSettings.text_type === "practice") {
+    text = allText.getShortMeaningfulText(keysArr[activeKeyIndex], {
+      size: newSettings.text_length,
+      punctuation: newSettings.punctuation,
+      capitalLetters: newSettings.capital_letters,
+    });
+  } else if (newSettings.text_type === "strict-practice") {
+    text = allText.getShortPracticeText(keysArr[activeKeyIndex], {
+      size: newSettings.text_length,
+      punctuation: newSettings.punctuation,
+      capitalLetters: newSettings.capital_letters,
+    });
+  } else {
+    text = allText.getQuot(get(activeIndex));
+  }
+
   if (!newSettings.punctuation) {
     const punctuationRegex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g;
-    text.update((t) => t.replaceAll(punctuationRegex, ""));
+    text = text.replaceAll(punctuationRegex, "");
   }
 
   if (!newSettings.capital_letters) {
-    text.update((t) => t.toLowerCase());
+    text = text.toLowerCase();
   }
-
-  if (newSettings.text_type === "practice") {
-    text.update(() =>
-      allText.getShortMeaningfulText(keysArr[activeKeyIndex], {
-        size: newSettings.text_length,
-        punctuation: newSettings.punctuation,
-        capitalLetters: newSettings.capital_letters,
-      })
-    );
-  } else if (newSettings.text_type === "strict-practice") {
-    text.update(() =>
-      allText.getShortPracticeText(keysArr[activeKeyIndex], {
-        size: newSettings.text_length,
-        punctuation: newSettings.punctuation,
-        capitalLetters: newSettings.capital_letters,
-      })
-    );
-  } else {
-    text.update(() => allText.getQuot(get(activeIndex)));
-  }
-  setTextMap(get(text));
+  setTextMap(text);
 });
 
-Array.from(get(text)).forEach((element, index) => {
+Array.from(text).forEach((element, index) => {
   textMap.set(index, {
     element,
     status: "not-active",
@@ -126,7 +123,7 @@ export const updateStatus = ({
 };
 
 export const resetLetters = () => {
-  setTextMap(get(text));
+  setTextMap(text);
   resetTimer();
 };
 
@@ -144,7 +141,7 @@ const getWords = (s: string) => {
 };
 
 const updateScores = () => {
-  let words = getWords(get(text));
+  let words = getWords(text);
 
   scores.update((currentScore) => {
     let newScore = currentScore;
@@ -162,7 +159,7 @@ const updateScores = () => {
   }));
 
   activeIndex.update((index) => index + 1);
-  setTextMap(get(text));
+  setTextMap(text);
 };
 
 export const typingDone = () => {
