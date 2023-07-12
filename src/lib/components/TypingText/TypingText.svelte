@@ -16,10 +16,6 @@
   let textFocused = false;
   let pressedKey = "";
   let timerStart = true;
-  let sLetters = new Map();
-  letters.subscribe((newLetters) => {
-    sLetters = newLetters;
-  });
 
   let divRef: HTMLDivElement;
 
@@ -29,20 +25,18 @@
     updateStatus({ index: 0, status: "active" });
   });
 
-  // @ts-ignore
-  const handleFocus = (e) => {
+  const handleFocus = () => {
     textFocused = true;
   };
 
-  // @ts-ignore
-  const handleBlur = (e) => {
+  const handleBlur = () => {
     textFocused = false;
     activeIndex = 0;
     resetLetters();
   };
 
   afterUpdate(() => {
-    if (["right", "wrong"].includes(sLetters.get(sLetters.size - 1).status)) {
+    if ($letters.size === activeIndex) {
       activeIndex = 0;
       endTimer();
       typingDone();
@@ -63,7 +57,7 @@
       if (!getItem(activeIndex)?.status.includes("wrong")) {
         updateStatus({ index: activeIndex, status: "right" });
       }
-      if (sLetters.size != activeIndex + 1) {
+      if ($letters.size != activeIndex + 1) {
         if (getItem(activeIndex)?.status.includes("wrong")) {
           updateStatus({ index: activeIndex, status: "wrong" });
         }
@@ -107,20 +101,20 @@
           Click here
         </div>
       {/if}
-      {#if sLetters.size > 0}
-        {#each Array.from(sLetters.keys()) as key, index}
+      {#if $letters.size > 0}
+        {#each Array.from($letters.keys()) as key, index}
           <span
             id={index.toString()}
-            class={`${textFocused ? sLetters.get(key).status : ""} `}
+            class={`${textFocused ? $letters?.get(key)?.status : ""} `}
           >
-            {#if sLetters.get(key).element === " "}
+            {#if $letters?.get(key)?.element === " "}
               {#if $settings.bar_white_space}
                 ␣
               {:else}
                 <span class="h-[1ch] w-[0.6ch]" />
               {/if}
             {:else}
-              {sLetters.get(key).element}
+              {$letters.get(key)?.element}
             {/if}
           </span>
         {/each}
